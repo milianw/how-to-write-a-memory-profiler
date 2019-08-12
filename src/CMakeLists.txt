@@ -41,3 +41,4 @@ include_directories(
     ${LIBDWARF_INCLUDE_DIRS}
 )
 add_subdirectory(symbolization)
+add_subdirectory(symbolization_inlines)
