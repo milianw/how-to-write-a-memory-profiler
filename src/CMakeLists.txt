@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(Libunwind REQUIRED)
+find_package(LibElf REQUIRED)
+find_package(Elfutils REQUIRED)
 include(CheckCXXSourceCompiles)
 
 check_cxx_source_compiles(
@@ -32,3 +34,10 @@ add_subdirectory(preload_more)
 include_directories(${LIBUNWIND_INCLUDE_DIR})
 add_subdirectory(backtrace)
 add_subdirectory(mappings)
+
+include_directories(
+    ${LIBELF_INCLUDE_DIRS}
+    ${LIBDW_INCLUDE_DIR}/elfutils
+    ${LIBDWARF_INCLUDE_DIRS}
+)
+add_subdirectory(symbolization)
