@@ -31,3 +31,4 @@ add_subdirectory(preload_more)
 
 include_directories(${LIBUNWIND_INCLUDE_DIR})
 add_subdirectory(backtrace)
+add_subdirectory(mappings)

@@ -8,4 +8,5 @@ namespace track {
 void init();
 void malloc(void *ptr, size_t size);
 void free(void *ptr);
+void invalidate_module_cache();
 }
