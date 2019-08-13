@@ -1,0 +1,3 @@
+libc vs. libdl for dlopen
+auto-solib-add off
+pipe output forwarding

@@ -43,3 +43,5 @@ include_directories(
 add_subdirectory(symbolization)
 add_subdirectory(symbolization_inlines)
 add_subdirectory(symbolization_clang)
+
+add_subdirectory(attach)
