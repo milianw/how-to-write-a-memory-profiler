@@ -1,0 +1,43 @@
+#!/bin/sh
+
+SCRIPT_PATH=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+LIBATTACH_NAME="libattach_intercept"
+LIBATTACH_PATH=$(readlink -f "$SCRIPT_DIR/$LIBATTACH_NAME.so")
+
+pid=$1
+if [ -z "$pid" ]; then
+    echo "missing PID argument"
+    exit 1
+fi
+
+# create a pipe to write the data to
+pipe=/tmp/attach_pipe_$$
+mkfifo $pipe || exit 1
+cat "$pipe" &
+cleanup() { rm -f "$pipe"; }
+cat_pid=$!
+trap cleanup EXIT
+
+# runtime-attach to application via gdb
+# then use dlopen to inject our library
+# finally call our entry point (attach_init)
+
+# we don't use dlopen directly, but rather __libc_dlopen_mode
+# this way, we can inject into apps that link libc dynamically, but don't link against libdl
+__RTLD_DLOPEN="0x80000000"
+RTLD_NOW="0x00002"
+
+# also speed up attaching to large apps, we don't need to resolve all symbols right away
+# rather, we only need libc.so's symbols for the internal dlopen function there
+# and then the symbols from our own library to call our entry point
+gdb --batch -n \
+    -iex="set auto-solib-add off" \
+    -p $pid \
+    --eval-command="sharedlibrary libc.so" \
+    --eval-command="call (void) __libc_dlopen_mode(\"$LIBATTACH_PATH\", $__RTLD_DLOPEN | $RTLD_NOW)" \
+    --eval-command="sharedlibrary $LIBATTACH_NAME" \
+    --eval-command="print (const char*) attach_init(\"$pipe\")" \
+    --eval-command="detach" 1>&2
+
+wait $cat_pid
