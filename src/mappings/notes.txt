@@ -1,3 +1,0 @@
-dl_iterate_phdr
-special handling for exe
-show addr2line working for some examples

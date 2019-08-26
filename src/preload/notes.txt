@@ -1,4 +1,0 @@
-important to link against libdl!! otherwise dlsym not available and hard to debug :)
-
-dlsym reinterpret_cast -> platform dependent, not guaranteed by standard
-ODR violations!
