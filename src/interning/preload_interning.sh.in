@@ -1,0 +1,10 @@
+#!/bin/sh
+
+SCRIPT_PATH=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+LIBPRELOAD_PATH=$(readlink -f "$SCRIPT_DIR/libpreload_interning.so")
+
+# important: we must specify the fully resolved, absolute path
+# LD_PRELOAD will reject symlinks and relative paths
+LD_PRELOAD="$LIBPRELOAD_PATH" $@
+

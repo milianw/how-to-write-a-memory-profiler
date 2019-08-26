@@ -16,6 +16,8 @@
  */
 struct Trace
 {
+    using ip_t = void*;
+
     enum : int
     {
         MAX_SIZE = 64
@@ -67,7 +69,7 @@ struct Trace
 private:
     int m_size = 0;
     int m_skip = 0;
-    std::array<void*, MAX_SIZE> m_data;
+    std::array<ip_t, MAX_SIZE> m_data;
 };
 
 #endif // TRACE_H
