@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+//--> slide
 #include <cstdlib>
 
 int main()
@@ -8,3 +9,4 @@ int main()
     free(buffer);
     return buffer ? 0 : 1;
 }
+//<-- slide

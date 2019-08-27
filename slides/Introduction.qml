@@ -76,4 +76,15 @@ SlideSet {
                     * Stack unwinding & debug symbols: <a href=\"https://sourceware.org/git/?p=elfutils.git\">elfutils</a>"
         }
     }
+    SlideSet {
+        title: "Tracing"
+        Slide {
+            text: "* Build your own tracer
+                   ** Domain specific
+                   * Use existing tracers
+                   ** lttng-ust
+                   ** perf with sdt / uprobe
+                   ** LLVM XRay"
+        }
+    }
 }

@@ -46,7 +46,6 @@ SlideDeck {
         label: "part-talk"
         title: "How to Write a Heap Profiler"
         Introduction {}
-        Tracing {}
         Preloading {}
         StackUnwinding {}
         SymbolResolution {}
