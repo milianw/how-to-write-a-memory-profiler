@@ -5,7 +5,9 @@
 
 int main()
 {
+//--> slide
     auto *buffer = malloc(100);
+//<-- slide
     free(buffer);
     return buffer ? 0 : 1;
 }
