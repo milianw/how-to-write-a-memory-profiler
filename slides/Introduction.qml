@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Introduction"
     Slide {
+        slideId: 7
         title: "This Talk"
         text: "This talk
                 * is highly platform specific
@@ -12,6 +13,7 @@ SlideSet {
                 * contains information I had to learn the hard way"
     }
     Slide {
+        slideId: 8
         title: "Tracing"
         text: "* Tracing is a useful debugging and profiling technique
                ** perf trace, strace, ltrace, heaptrack, printf-debugging, ..."

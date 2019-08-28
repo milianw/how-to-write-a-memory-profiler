@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Preloading"
     Slide {
+        slideId: 10
         title: "Memory Allocations"
         text: "* How can we trace memory allocations?
                ** In <tt>libc</tt>:
@@ -18,6 +19,7 @@ SlideSet {
 //     SlideSet {
 //         title: "Code Injection"
         Slide {
+            slideId: 11
             title: "<tt>LD_PRELOAD</tt>"
             text: "Use the dynamic linker to inject custom library code:"
             Code {
@@ -34,6 +36,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 12
             title: "Intercepting Library Calls"
             text: "Build a library with the symbols you want to intercept
                 * Use <tt>dlsym</tt> from <tt>libdl.so</tt> to find the original function
@@ -53,6 +56,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 13
             title: "Intercepting Library Calls"
             text: "Now we can leverage <tt>LD_PRELOAD</tt> to inject our custom code:"
             Code {
@@ -75,6 +79,7 @@ SlideSet {
         }
 
         Slide {
+            slideId: 14
             title: "Inspecting Dynamic Linking: Without <tt>LD_PRELOAD</tt>"
             Code {
                 dialect: "Bash"
@@ -95,6 +100,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 15
             title: "Inspecting Dynamic Linking: With <tt>LD_PRELOAD</tt>"
             Code {
                 dialect: "Bash"
@@ -126,6 +132,7 @@ SlideSet {
         title: "Initialization"
         include: false
         Slide {
+            slideId: 16
             title: "Global Static Initialization"
             text: "Constructors of global static objects:"
             CppCode {
@@ -150,6 +157,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 17
             title: "Lazy Initialization"
             text: "Solution: Use lazy initialization"
             CppCode {

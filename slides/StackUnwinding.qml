@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Stack Unwinding"
     Slide {
+        slideId: 30
         title: "Stack Unwinding"
         text: "* We need to unwind the stack to get a backtrace
                * Approaches:
@@ -15,6 +16,7 @@ SlideSet {
     }
 
     Slide {
+        slideId: 31
         title: "Backtrace Libraries"
         text: "* libc's <tt>backtrace</tt> depends on frame pointers
                * elfutils <tt>dwfl_thread_getframes</tt> is complex to use
@@ -23,6 +25,7 @@ SlideSet {
     }
 
     Slide {
+        slideId: 32
         title: "Using libunwind"
         id: trace
         text: "Using libunwind is trivial:"

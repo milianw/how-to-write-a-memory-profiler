@@ -55,7 +55,7 @@ SlideDeck {
 
     Slide {
         SlideAttached.showPageNumber: false
-        slideId: 10
+        slideId: 100
 
         TextBase {
             font.pixelSize: 50

@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Symbol Resolution"
     Slide {
+        slideId: 40
         id: symbolResolution
         title: "Symbol Resolution"
         text: "* Instruction pointer: <tt>0x55b20bc95d9f</tt>
@@ -63,6 +64,7 @@ SlideSet {
     SlideSet {
         title: "ELF mappings"
         Slide {
+            slideId: 41
             title: "<tt>dl_iterate_phdr</tt>"
             text: "Iterate over DSO mappings with <tt>dl_iterate_phdr</tt> from <tt>libdl.so</tt> / <tt>link.h</tt>:"
 
@@ -85,6 +87,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 42
             title: "Preload Mappings"
 
             text: "Integrated into <tt>LD_PRELOAD</tt> library:
@@ -100,6 +103,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 43
             title: "Preload Mappings Output"
             Code {
                 code: "
@@ -132,6 +136,7 @@ SlideSet {
     SlideSet {
         title: "elfutils"
         Slide {
+            slideId: 44
             title: "Symbol Resolution with elfutils"
             text: "* Doing symbol resolution is complex
                    ** Symbol table
@@ -141,6 +146,7 @@ SlideSet {
                    * Let's use <tt>libdwfl</tt> from elfutils for this task"
         }
         Slide {
+            slideId: 45
             title: "libdwfl: Setup"
             text: "Basic libdwfl setup:"
             CppCode {
@@ -150,6 +156,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 46
             title: "libdwfl: ELF Reporting"
             text: "Reporting mapped ELF objects:"
             CppCode {
@@ -159,6 +166,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 47
             title: "libdwfl: Symbol Resolution"
             text: "Resolve symbol of address:"
             CppCode {
@@ -173,6 +181,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 48
             title: "libdwfl: Resolving Symbol Names"
             text: "Resolving symbol names from symbol table or DWARF:"
             CppCode {
@@ -182,6 +191,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 49
             title: "libdwfl: Resolving Source Code Locations"
             text: "Resolving source code file name and line number from DWARF:"
             CppCode {
@@ -194,6 +204,7 @@ SlideSet {
     SlideSet {
         title: "Demangling"
         Slide {
+            slideId: 50
             title: "Demangling: <tt>c++filt</tt>"
 
             text: "Demangling C++ function with <tt>c++filt</tt>:"
@@ -210,6 +221,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 51
             title: "Demangling: <tt>cxxabi.h</tt>"
 
             text: "Manual demangling via <tt>cxxabi.h</tt>:"
@@ -221,6 +233,7 @@ SlideSet {
         }
     }
     Slide {
+        slideId: 52
         title: "Symbolizing Allocation Backtraces"
         text: "Putting it all together:"
         Code {

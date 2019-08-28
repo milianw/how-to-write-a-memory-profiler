@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Inline Frames"
     Slide {
+        slideId: 60
         title: "libdwfl: CU DIE"
         text: "Find compilation unit (CU) debug infromation entry (DIE):"
 
@@ -13,6 +14,7 @@ SlideSet {
         }
     }
     Slide {
+        slideId: 61
         title: "libdwfl: scope DIE"
         text: "Find innermost scope DIE:"
         CppCode {
@@ -22,6 +24,7 @@ SlideSet {
         }
     }
     Slide {
+        slideId: 62
         title: "libdwfl: scope DIE"
         text: "Find other DIEs that contain scope DIE:"
         CppCode {
@@ -31,6 +34,7 @@ SlideSet {
         }
     }
     Slide {
+        slideId: 63
         title: "Symbolizing Allocation Backtraces"
         text: "Putting it all together:"
 

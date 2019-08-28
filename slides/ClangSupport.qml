@@ -3,6 +3,7 @@ import SlideViewer 1.0
 SlideSet {
     title: "Clang Support"
     Slide {
+        slideId: 65
         title: "Clang: Missing <tt>.debug_aranges</tt>"
         text: "* Clang does not emit <tt>.debug_aranges</tt> section by default
                ** This breaks CU DIE lookup via <tt>dwfl_module_addrdie</tt>

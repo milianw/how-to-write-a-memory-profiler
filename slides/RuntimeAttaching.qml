@@ -5,6 +5,7 @@ SlideSet {
     SlideSet {
         title: "Code Injection"
         Slide {
+            slideId: 20
             id: injection
             title: "Code Injection"
             text: "Q: How can we inject and execute our code into a running application?"
@@ -19,6 +20,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 21
             title: "GDB injection"
             id: gdb
             text: "
@@ -54,6 +56,7 @@ SlideSet {
     SlideSet {
         title: "Intercepting Library Calls"
         Slide {
+            slideId: 22
             title: "Short Introduction to GOT / PLT"
             text: "* Calls to dynamically shared objects require relocations
                    ** See: https://www.akkadia.org/drepper/dsohowto.pdf
@@ -62,6 +65,7 @@ SlideSet {
                    * PLT: Procedure Linkage Table "
         }
         Slide {
+            slideId: 23
             title: "Short Introduction to GOT / PLT"
             CppCode {
                 code: "
@@ -107,6 +111,7 @@ SlideSet {
             }
         }
         Slide {
+            slideId: 24
             id: rebinding
             title: "Dynamic Rebinding For Tracing"
             text: "
