@@ -65,8 +65,7 @@ SlideSet {
             title: "Short Introduction to GOT / PLT"
             CppCode {
                 code: "
-                        int main()
-                        {
+                        int main() {
                             auto *buffer = malloc(100);
                         }"
             }
