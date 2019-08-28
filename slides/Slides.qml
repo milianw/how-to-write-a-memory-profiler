@@ -60,6 +60,7 @@ SlideDeck {
                ** Consider zstd compression
                ** Consider binary data formar (e.g. protobuf or similar)
                ** Graphing essentially requires a good time series data format
+               * API for custom allocators
                * Analysis GUI
                ** FlameGraph visualization is crucial
                * Handling other quirks
