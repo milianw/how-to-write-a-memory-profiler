@@ -88,7 +88,9 @@ DsoSymbol Symbolizer::symbol(uint64_t ip)
     return symbol;
 }
 
-static const char *dieName(Dwarf_Die *die)
+namespace {
+//--> slide dieName
+const char *dieName(Dwarf_Die *die)
 {
     Dwarf_Attribute attr;
     Dwarf_Attribute *result = dwarf_attr_integrate(die, DW_AT_MIPS_linkage_name, &attr);
@@ -101,8 +103,35 @@ static const char *dieName(Dwarf_Die *die)
 
     return dwarf_diename(die);
 }
+//<-- slide dieName
 
+//--> slide inlinedSubroutineSymbol
+Symbol inlinedSubroutineSymbol(Dwarf_Die *scope, Dwarf_Files *files)
+{
+    Dwarf_Attribute attr;
+    Dwarf_Word val = 0;
 
+    Symbol symbol;
+
+    symbol.name = dieName(scope);
+
+    const char *file = nullptr;
+    if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_file, &attr), &val) == 0)
+        file = dwarf_filesrc(files, val, nullptr, nullptr);
+    symbol.file = file ? file : "??";
+
+    if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_line, &attr), &val) == 0)
+        symbol.line = static_cast<int>(val);
+
+    if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_column, &attr), &val) == 0)
+        symbol.column = static_cast<int>(val);
+
+    return symbol;
+}
+//<-- slide inlinedSubroutineSymbol
+}
+
+//--> slide cu die
 std::vector<Symbol> Symbolizer::inlineSymbols(uint64_t ip)
 {
     auto *mod = dwfl_addrmodule(m_dwfl, ip);
@@ -110,56 +139,42 @@ std::vector<Symbol> Symbolizer::inlineSymbols(uint64_t ip)
         return {};
 
     Dwarf_Addr bias = 0;
-    auto die = dwfl_module_addrdie(mod, ip, &bias);
-    if (!die)
+    // CU DIE: Compilation Unit Debug Information Entry
+    auto cuDie = dwfl_module_addrdie(mod, ip, &bias);
+    if (!cuDie)
         return {};
+//<-- slide cu die
 
-    Dwarf_Die subroutine;
+//--> slide scope die
+    // innermost scope DIE
+    Dwarf_Die scopeDie;
+    {
+        Dwarf_Die *scopes = nullptr;
+        const auto nscopes = dwarf_getscopes(cuDie, ip - bias, &scopes);
+        if (nscopes == 0)
+            return {};
+        scopeDie = scopes[0];
+        free(scopes);
+    }
+//<-- slide scope die
+
+//--> slide die scopes
     Dwarf_Die *scopes = nullptr;
-    int nscopes = dwarf_getscopes(die, ip - bias, &scopes);
-    if (nscopes == 0)
-        return {};
-
-    Dwarf_Off dieoff = dwarf_dieoffset(&scopes[0]);
-    dwarf_offdie(dwfl_module_getdwarf(mod, &bias), dieoff, &subroutine);
-    free(scopes);
-
-    nscopes = dwarf_getscopes_die(&subroutine, &scopes);
+    const auto nscopes = dwarf_getscopes_die(&scopeDie, &scopes);
 
     Dwarf_Files *files = nullptr;
-    dwarf_getsrcfiles(die, &files, nullptr);
+    dwarf_getsrcfiles(cuDie, &files, nullptr);
 
     std::vector<Symbol> symbols;
-
     for (int i = 0; i < nscopes; ++i) {
         const auto scope = &scopes[i];
-        const auto tag = dwarf_tag(scope);
-        if (tag == DW_TAG_inlined_subroutine) {
-            Dwarf_Attribute attr;
-            Dwarf_Word val = 0;
-
-            Symbol symbol;
-
-            symbol.name = dieName(scope);
-
-            const char *file = nullptr;
-            if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_file, &attr), &val) == 0)
-                file = dwarf_filesrc(files, val, nullptr, nullptr);
-            symbol.file = file ? file : "??";
-
-            if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_line, &attr), &val) == 0)
-                symbol.line = static_cast<int>(val);
-
-            if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_column, &attr), &val) == 0)
-                symbol.column = static_cast<int>(val);
-
-            symbols.push_back(symbol);
-        }
+        if (dwarf_tag(scope) == DW_TAG_inlined_subroutine)
+            symbols.push_back(inlinedSubroutineSymbol(scope, files));
     }
-
     free(scopes);
 
     return symbols;
+//<-- slide die scopes
 }
 
 std::string Symbolizer::demangle(const std::string &symbol) const
