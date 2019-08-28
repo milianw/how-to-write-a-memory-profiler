@@ -9,8 +9,12 @@ SlideSet {
         text: "* Instruction pointer: <tt>0x55b20bc95d9f</tt>
                * Corresponding ELF map:"
         Code {
+            dialect: "Bash"
             code: "$ ./backtrace/preload_backtrace.sh ./test_clients/delay &
-                   $ cat /proc/$(pidof delay)/maps
+                   $ cat /proc/$(pidof delay)/maps"
+        }
+        Code {
+            code: "
                     55b20bc95000-55b20bc97000 r-xp 00000000 08:04 18622503 \\
                         .../test_clients/delay
                     55b20bc97000-55b20bc98000 r--p 00001000 08:04 18622503 \\
@@ -24,36 +28,49 @@ SlideSet {
                    * Symbol resolution:"
         }
         Code {
-            title: "addr2line"
             visible: symbolResolution.onlyStep(0)
+            code: "$ addr2line -p -e .../test_clients/delay -a 0xD9F"
+            dialect: "Bash"
+        }
+        Code {
+            visible: symbolResolution.onlyStep(0)
+            showLineNumbers: true
             code: "
-                $ addr2line -p -e .../test_clients/delay -a 0xD9F
                 0x0000000000000d9f:
                     /usr/include/c++/9.1.0/ostream:570"
         }
         Code {
-            title: "addr2line with functions"
+            visible: symbolResolution.onlyStep(1)
+            code: "$ addr2line -p -f -e .../test_clients/delay -a 0xD9F"
+            dialect: "Bash"
+        }
+        Code {
             visible: symbolResolution.onlyStep(1)
             code: "
-                $ addr2line -p -f -e .../test_clients/delay -a 0xD9F
                 0x0000000000000d9f:
                     _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
                         at /usr/include/c++/9.1.0/ostream:570"
         }
         Code {
-            title: "addr2line with demangling"
+            visible: symbolResolution.onlyStep(2)
+            code: "$ addr2line -p -f -C -e .../test_clients/delay -a 0xD9F"
+            dialect: "Bash"
+        }
+        Code {
             visible: symbolResolution.onlyStep(2)
             code: "
-                $ addr2line -p -f -C -e .../test_clients/delay -a 0xD9F
                 0x0000000000000d9f:
                     std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
                         at /usr/include/c++/9.1.0/ostream:570"
         }
         Code {
-            title: "addr2line with inline frames"
+            visible: symbolResolution.onlyStep(3)
+            code: "$ addr2line -p -f -C -i -e .../test_clients/delay -a 0xD9F"
+            dialect: "Bash"
+        }
+        Code {
             visible: symbolResolution.onlyStep(3)
             code: "
-                $ addr2line -p -f -C -i -e .../test_clients/delay -a 0xD9F
                 0x0000000000000d9f:
                     std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
                         at /usr/include/c++/9.1.0/ostream:570
@@ -70,7 +87,7 @@ SlideSet {
 
             CppCode {
                 code: "
-                    #include &lt;link.h>
+                    #include <link.h>
 
                     void dumpMappings(FILE *out)
                     {
@@ -79,7 +96,7 @@ SlideSet {
                             if (!name || !name[0])
                                 name = \"exe\";
 
-                            auto out = reinterpret_cast&lt;FILE *>(data);
+                            auto out = reinterpret_cast<FILE *>(data);
                             fprintf(out, \"%s is mapped at: 0x%zx\\n\", name, info->dlpi_addr);
                             return 0;
                         }, out);
