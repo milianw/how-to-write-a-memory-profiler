@@ -8,10 +8,11 @@
 //--> slide hook
 void *intercept_malloc(size_t size)
 {
-    static auto original_malloc = reinterpret_cast<decltype(&::malloc)>(dlsym(RTLD_NEXT, "malloc"));
+    static auto original_malloc = dlsym(RTLD_NEXT, "malloc");
     assert(original_malloc);
 
-    auto ret = original_malloc(size);
+    auto original_malloc_fn = reinterpret_cast<decltype(&::malloc)>(original_malloc);
+    auto ret = original_malloc_fn(size);
 
     fprintf(stderr, "malloc intercepted: %zu -> %p\n", size, ret);
     return ret;
