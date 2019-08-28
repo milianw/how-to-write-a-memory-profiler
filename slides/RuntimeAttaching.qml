@@ -2,15 +2,57 @@ import SlideViewer 1.0
 
 SlideSet {
     title: "Runtime Attaching"
-    Slide {
-        text: "* gdb attach and then call custom code
-               * auto-solib-add performance
-               * dlopen vs. libc's internal dlopen (-ldl)
-               * pipe output forwarding
-               * GOT / PLT, cf. https://www.akkadia.org/drepper/dsohowto.pdf and https://stackoverflow.com/questions/27137527/overload-symbols-of-running-process-ld-preload-attachment"
+    SlideSet {
+        title: "Code Injection"
+        Slide {
+            id: injection
+            title: "Code Injection"
+            text: "Q: How can we inject and execute our code into a running application?"
+
+            Space { height: 20 }
+
+            Text {
+                visible: injection.minStep(1)
+                text: "A: With a debugger and dlopen!<br/><br/>
+                       <small>Caveat: only works for dynamically linked applications</small>
+                       "
+            }
+        }
+        Slide {
+            title: "GDB injection"
+            id: gdb
+            text: "
+                * Attach to any application via <tt>gdb -p PID</tt>
+                ** Auto loading of symbols is often quite slow
+                ** Thus disable that and resolve necessary symbols manually
+                * Call <tt>dlopen</tt> to load your own code
+                ** <tt>dlopen</tt> is only available when application links against <tt>libdl.so</tt>
+                ** Use <tt>libc.so</tt> internal <tt>__libc_dlopen_mode</tt> instead
+                * Optionally call custom init function with tracing arguments"
+            Code {
+                dialect: "Bash"
+                visible: gdb.minStep(1)
+                code: "
+                    __RTLD_DLOPEN=\"0x80000000\"
+                    RTLD_NOW=\"0x00002\"
+                    gdb --batch-silent -n \\
+                        -iex=\"set auto-solib-add off\" \\
+                        -p $pid \\
+                        --eval-command=\"sharedlibrary libc.so\" \\
+                        --eval-command=\"call (void) __libc_dlopen_mode(\\\"/path/to/mylib.so\\\", \\
+                                                                        $__RTLD_DLOPEN | $RTLD_NOW)\" \\
+                        --eval-command=\"sharedlibrary mylib\" \\
+                        --eval-command=\"call (void) attach_init(\\\"/path/to/trace.log\\\")\" \\
+                        --eval-command=\"detach\"
+                "
+            }
+            textNote: "- auto-solib-add performance: much improved performance
+                       - dlopen only available when linked against libdl
+                       - __libc_dlopen_mode quite similar, always available when libc is linked in"
+        }
     }
     SlideSet {
-        title: "GOT / PLT"
+        title: "Intercepting Library Calls"
         Slide {
             title: "Short Introduction to GOT / PLT"
             text: "* Calls to dynamically shared objects require relocations
