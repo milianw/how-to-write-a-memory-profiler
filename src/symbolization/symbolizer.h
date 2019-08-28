@@ -6,6 +6,7 @@
 
 struct Dwfl;
 
+//--> slide symbol_t
 struct Symbol
 {
     std::string name;
@@ -16,7 +17,9 @@ struct Symbol
     int line = 0;
     int column = 0;
 };
+//<-- slide symbol_t
 
+//--> slide symbolizer
 class Symbolizer
 {
 public:
@@ -34,3 +37,4 @@ public:
 private:
     Dwfl *m_dwfl;
 };
+//<-- slide symbolizer

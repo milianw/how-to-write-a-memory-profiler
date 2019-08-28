@@ -49,8 +49,6 @@ SlideDeck {
         Preloading {}
         StackUnwinding {}
         SymbolResolution {}
-        InlineFrames {}
-        ClangSupport {}
         RuntimeAttaching {}
         OutputDataFormat {}
     }
