@@ -2,6 +2,25 @@ import SlideViewer 1.0
 
 SlideSet {
     title: "Introduction"
+    Slide {
+        title: "This Talk"
+        text: "This talk
+                * is highly platform specific
+                ** ELF, DWARF, ld-linux, ...
+                * shows lots of dirty tricks
+                ** Language lawyers beware!
+                * contains information I had to learn the hard way"
+    }
+    Slide {
+        title: "Tracing"
+        text: "* Tracing is a useful debugging and profiling technique
+               ** perf trace, strace, ltrace, heaptrack, printf-debugging, ..."
+        text2: "Need a domain specific custom tracer?
+                * Prefer to use existing tracing frameworks:
+                ** lttng-ust
+                ** perf with sdt / uprobe
+                ** LLVM XRay"
+    }
     SlideSet {
         title: "heaptrack"
         Slide {
@@ -74,17 +93,6 @@ SlideSet {
             text: "Main building blocks
                     * Parsing <tt>perf.data</tt>: <a href=\"https://code.qt.io/cgit/qt-creator/perfparser.git/tree/\">perfparser</a>
                     * Stack unwinding & debug symbols: <a href=\"https://sourceware.org/git/?p=elfutils.git\">elfutils</a>"
-        }
-    }
-    SlideSet {
-        title: "Tracing"
-        Slide {
-            text: "* Build your own tracer
-                   ** Domain specific
-                   * Use existing tracers
-                   ** lttng-ust
-                   ** perf with sdt / uprobe
-                   ** LLVM XRay"
         }
     }
 }
