@@ -54,6 +54,23 @@ SlideDeck {
     }
 
     Slide {
+        slideId: 101
+        title: "Road Towards A Real Heap Profiler"
+        text: "* Efficient output data format
+               ** Consider zstd compression
+               ** Consider binary data formar (e.g. protobuf or similar)
+               ** Graphing essentially requires a good time series data format
+               * Analysis GUI
+               ** FlameGraph visualization is crucial
+               * Handling other quirks
+               ** forking, sub processes, clean shutdown, ..."
+        Space { height: 25 }
+        TextBase {
+            text: "Please contribute to heaptrack instead of writing your own!"
+            font.pixelSize: 30
+        }
+    }
+    Slide {
         SlideAttached.showPageNumber: false
         slideId: 100
 
