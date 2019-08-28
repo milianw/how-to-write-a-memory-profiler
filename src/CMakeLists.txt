@@ -45,6 +45,7 @@ add_subdirectory(symbolization_inlines)
 add_subdirectory(symbolization_clang)
 
 add_subdirectory(attach)
+add_subdirectory(got_overwriting)
 add_subdirectory(attach_intercept)
 
 add_subdirectory(interning)
