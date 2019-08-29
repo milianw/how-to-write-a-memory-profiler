@@ -5,7 +5,7 @@ SlideSet {
     Slide {
         slideId: 10
         title: "Memory Allocations"
-        text: "What is allocating memory?
+        text: "What is allocating dynamic storage (i.e. heap memory)?
                * In <tt>libc</tt>:
                ** <tt>malloc</tt>, <tt>free</tt>
                ** <tt>realloc</tt>, <tt>calloc</tt>
