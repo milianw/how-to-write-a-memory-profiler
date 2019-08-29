@@ -31,7 +31,7 @@ void overwriteGotEntry(const char *symname, Elf::Addr gotAddr)
 //--> slide relocations
 void overwriteGotEntries(const Elf::JmprelTable &relocations,
                          const Elf::SymbolTable &symbols,
-                           const Elf::StringTable &strings,
+                         const Elf::StringTable &strings,
                          Elf::Addr baseAddr)
 {
     for (const auto &relocation : relocations) {
