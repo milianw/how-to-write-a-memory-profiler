@@ -112,48 +112,91 @@ SlideSet {
         }
         Slide {
             slideId: 24
-            id: rebinding
             title: "Dynamic Rebinding For Tracing"
             text: "
                 * Iterate over all relocations in all DSOs
                 * Check if the symbol name matches one of our trace points
                 * If so, overwrite the address in the GOT with the address to our trace point
                 "
+        }
+        Slide {
+            slideId: 25
+            title: "Dynamic Rebinding: Example"
+            text: "Basic example:"
             CppCode {
+                title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide main"
-                visible: rebinding.onlyStep(1)
             }
+        }
+        Slide {
+            slideId: 26
+            title: "Dynamic Rebinding: Dynamic Sections"
+            text: "Iterate over dynamic sections:"
             CppCode {
+                title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide dl_iterate_phdr"
-                visible: rebinding.onlyStep(2)
             }
+        }
+        Slide {
+            slideId: 27
+            title: "Dynamic Rebinding: Initializing ELF Tables"
+            text: "Initializing access to ELF tables:"
             CppCode {
+                title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide tables"
-                visible: rebinding.onlyStep(3)
             }
+        }
+
+        Slide {
+            slideId: 29
+            title: "Dynamic Rebinding: ELF types"
+            text: "Required ELF types:"
             CppCode {
+                title: "elftable.h"
+                fileName: "../src/shared/elftable.h"
+                fileMarker: "slide tables"
+            }
+        }
+
+        Slide {
+            slideId: 28
+            title: "Dynamic Rebinding: ELF Tables"
+            text: "Accessing ELF tables:"
+            CppCode {
+                title: "elftable.h"
                 fileName: "../src/shared/elftable.h"
                 fileMarker: "slide table_def"
                 visible: rebinding.onlyStep(4)
             }
+        }
+        Slide {
+            slideId: 201
+            title: "Dynamic Rebinding: Relocations"
+            text: "Iterate over relocations:"
             CppCode {
-                fileName: "../src/shared/elftable.h"
-                fileMarker: "slide tables"
-                visible: rebinding.onlyStep(5)
-            }
-            CppCode {
+                title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide relocations"
-                visible: rebinding.onlyStep(6)
             }
+        }
+        Slide {
+            slideId: 202
+            title: "Dynamic Rebinding: Hooking"
+            text: "Overwrite the GOT entry to intercept function calls:"
             CppCode {
+                title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide hook"
                 visible: rebinding.onlyStep(7)
             }
+        }
+        Slide {
+            slideId: 203
+            title: "Dynamic Rebinding: Example Output"
+            text: "Putting it all together:"
             Code {
                 title: "got_overwriting"
                 code: "
