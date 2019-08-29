@@ -5,7 +5,7 @@ SlideSet {
     Slide {
         slideId: 60
         title: "libdwfl: CU DIE"
-        text: "Find compilation unit (CU) debug infromation entry (DIE):"
+        text: "Find compilation unit (CU) debug information entry (DIE):"
 
         CppCode {
             title: "symbolization.cpp"
@@ -15,7 +15,7 @@ SlideSet {
     }
     Slide {
         slideId: 61
-        title: "libdwfl: scope DIE"
+        title: "libdwfl: Scope DIE"
         text: "Find innermost scope DIE:"
         CppCode {
             title: "symbolization.cpp"
@@ -25,12 +25,32 @@ SlideSet {
     }
     Slide {
         slideId: 62
-        title: "libdwfl: scope DIE"
-        text: "Find other DIEs that contain scope DIE:"
+        title: "libdwfl: Inlined DIEs"
+        text: "Find inlined frames, i.e. other DIEs that contain scope DIE:"
         CppCode {
             title: "symbolization.cpp"
             fileName: "../src/symbolization_inlines/symbolizer.cpp"
             fileMarker: "slide die scopes"
+        }
+    }
+    Slide {
+        slideId: 67
+        title: "libdwfl:Symbol Resolution for Inlined Frames"
+        text: "Resolve symbol name for inlined frame scope:"
+        CppCode {
+            title: "symbolization.cpp"
+            fileName: "../src/symbolization_inlines/symbolizer.cpp"
+            fileMarker: "slide dieName"
+        }
+    }
+    Slide {
+        slideId: 64
+        title: "libdwfl: Information for inlined DIE"
+        text: "Resolve source file and line number for inlined frame scope:"
+        CppCode {
+            title: "symbolization.cpp"
+            fileName: "../src/symbolization_inlines/symbolizer.cpp"
+            fileMarker: "slide inlinedSubroutineSymbol"
         }
     }
     Slide {

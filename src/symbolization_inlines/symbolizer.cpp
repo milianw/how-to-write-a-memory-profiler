@@ -131,9 +131,9 @@ Symbol inlinedSubroutineSymbol(Dwarf_Die *scope, Dwarf_Files *files)
 //<-- slide inlinedSubroutineSymbol
 }
 
-//--> slide cu die
 std::vector<Symbol> Symbolizer::inlineSymbols(uint64_t ip)
 {
+//--> slide cu die
     auto *mod = dwfl_addrmodule(m_dwfl, ip);
     if (!mod)
         return {};
@@ -172,9 +172,9 @@ std::vector<Symbol> Symbolizer::inlineSymbols(uint64_t ip)
             symbols.push_back(inlinedSubroutineSymbol(scope, files));
     }
     free(scopes);
+//<-- slide die scopes
 
     return symbols;
-//<-- slide die scopes
 }
 
 std::string Symbolizer::demangle(const std::string &symbol) const
