@@ -32,7 +32,8 @@ SlideSet {
                     * First library with a suitable exported symbol wins
                     ** Make sure the mangled name matches
                     * <tt>LD_PRELOAD</tt> wins over dynamically linked <tt>libc</tt>
-                    * Yes, we are violating the ODR!
+                    * ODR?
+                    ** C++ standard does not define how linking works
                     "
             }
         }
