@@ -192,7 +192,6 @@ SlideSet {
                 fileMarker: "slide symbol resolution"
             }
             CppCode {
-                title: "symbolizer.cpp"
                 fileName: "../src/symbolization/symbolizer.cpp"
                 fileMarker: "slide setDsoInfo"
             }
