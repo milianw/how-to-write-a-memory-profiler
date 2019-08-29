@@ -58,7 +58,7 @@ SlideDeck {
         title: "Road Towards A Real Heap Profiler"
         text: "* Efficient output data format
                ** Consider zstd compression
-               ** Consider binary data formar (e.g. protobuf or similar)
+               ** Consider binary data format (e.g. protobuf or similar)
                ** Graphing essentially requires a good time series data format
                * API for custom allocators
                * Analysis GUI

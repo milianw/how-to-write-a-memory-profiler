@@ -11,7 +11,7 @@ SlideSet {
                ** Use exception unwind tables (<tt>.eh_frame</tt> or <tt>.ARM.exidx</tt> sections)
                ** DWARF debug information (<tt>.debug_frame</tt> section)
                ** Alternatives:
-               *** Intel LBR (often to shallow)
+               *** Intel LBR (often too shallow)
                *** Shadow Stack (https://github.com/nokia/not-perf)"
     }
 
