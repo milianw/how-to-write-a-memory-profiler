@@ -95,18 +95,17 @@ SlideSet {
             }
             Code {
                 code: "
-                        Disassembly of section .plt:
                         ...
-                        0000000000000720 <malloc@plt>:
-                        720:   ff 25 da 18 00 00       jmpq   *0x18da(%rip)        # 2000 <malloc@GLIBC_2.2.5>
+                        0000000000000720 &lt;malloc@plt>:                             # disassembly of section .plt
+                        720:   ff 25 da 18 00 00       jmpq   *0x18da(%rip)        # 2000 &lt;malloc@GLIBC_2.2.5>
                         726:   68 00 00 00 00          pushq  $0x0
-                        72b:   e9 e0 ff ff ff          jmpq   710 <_init+0x28>
+                        72b:   e9 e0 ff ff ff          jmpq   710 &lt;_init+0x28>
                         ...
-                        0000000000000839 <main>:
+                        0000000000000839 &lt;main>:                                   # disassembly of section .text
                         ...
                             auto *buffer = malloc(100);
                         841:   bf 64 00 00 00          mov    $0x64,%edi
-                        846:   e8 d5 fe ff ff          callq  720 <malloc@plt>
+                        846:   e8 d5 fe ff ff          callq  720 &lt;malloc@plt>
                         84b:   48 89 45 f8             mov    %rax,-0x8(%rbp) "
             }
         }

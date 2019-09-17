@@ -296,7 +296,7 @@ SlideSet {
                     /usr/lib/libstdc++.so.6@a2ac9
                     /build/gcc/src/gcc/libstdc++-v3/libsupc++/new_op.cc:50:22
                 ip: 0x55f38ef73ca1
-                    void std::vector<int, std::allocator<int> >::_M_realloc_insert...
+                    void std::vector&lt;int, std::allocator&lt;int> >::_M_realloc_insert...
                     .../test_clients/vector@ca1
                     /usr/include/c++/9.1.0/ext/new_allocator.h:114:41
                 ip:0x55f38ef73ad0

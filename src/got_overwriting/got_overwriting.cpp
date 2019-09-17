@@ -47,14 +47,19 @@ void overwriteGotEntries(const Elf::JmprelTable &relocations,
 void overwriteDynEntries(const Elf::Dyn *dynEntries, Elf::Addr baseAddr)
 {
     Elf::SymbolTable symbols;
-    Elf::JmprelTable jmprels;
     Elf::StringTable strings;
+    Elf::RelTable rels;
+    Elf::RelaTable relas;
+    Elf::JmprelTable jmprels;
 
     // initialize the elf tables
     for (auto dyn = dynEntries; dyn->d_tag != DT_NULL; ++dyn) {
-        symbols.consume(dyn) || strings.consume(dyn) || jmprels.consume(dyn);
+        symbols.consume(dyn) || strings.consume(dyn)
+            || rels.consume(dyn) || relas.consume(dyn) || jmprels.consume(dyn) ;
     }
 
+    overwriteGotEntries(rels, symbols, strings, baseAddr);
+    overwriteGotEntries(relas, symbols, strings, baseAddr);
     overwriteGotEntries(jmprels, symbols, strings, baseAddr);
 }
 //<-- slide tables

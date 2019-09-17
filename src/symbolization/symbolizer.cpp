@@ -11,10 +11,10 @@
 
 namespace {
 const Dwfl_Callbacks s_callbacks = {
-    &dwfl_build_id_find_elf,
-    &dwfl_standard_find_debuginfo,
-    &dwfl_offline_section_address,
-    nullptr
+    /* find_elf = */        &dwfl_build_id_find_elf,
+    /* find_debuginfo = */  &dwfl_standard_find_debuginfo,
+    /* section_address = */ &dwfl_offline_section_address,
+    /* debuginfo_path = */  nullptr
 };
 }
 
@@ -35,6 +35,7 @@ void Symbolizer::beginReportElf()
     dwfl_report_begin(m_dwfl);
 }
 
+// addr is the base address obtained from e.g. dl_phdr_info->dlpi_addr
 void Symbolizer::reportElf(const std::string &path, uint64_t addr)
 {
     if (!dwfl_report_elf(m_dwfl, path.c_str(), path.c_str(), -1, addr, false)) {
@@ -54,6 +55,7 @@ void Symbolizer::endReportElf()
 
 namespace {
 //--> slide setDsoInfo
+// 0xDEADBEEF -> libfoo @ 0xBEEF
 void setDsoInfo(Symbol &symbol, Dwfl_Module *mod, Dwarf_Addr ip)
 {
     Dwarf_Addr moduleStart = 0;
@@ -64,6 +66,7 @@ void setDsoInfo(Symbol &symbol, Dwfl_Module *mod, Dwarf_Addr ip)
 //<-- slide setDsoInfo
 
 //--> slide setSymInfo
+// 0xDEADBEEF -> foobar @ 0xEF
 void setSymInfo(Symbol &symbol, Dwfl_Module *mod, Dwarf_Addr ip)
 {
     GElf_Sym sym;
@@ -76,6 +79,7 @@ void setSymInfo(Symbol &symbol, Dwfl_Module *mod, Dwarf_Addr ip)
 //<-- slide setSymInfo
 
 //--> slide setFileLineInfo
+// 0xDEADBEEF -> foo.cpp:42
 void setFileLineInfo(Symbol &symbol, Dwfl_Module *mod, Dwarf_Addr ip)
 {
     Dwarf_Addr bias = 0;
