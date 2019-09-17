@@ -169,7 +169,6 @@ SlideSet {
                 title: "elftable.h"
                 fileName: "../src/shared/elftable.h"
                 fileMarker: "slide table_def"
-                visible: rebinding.onlyStep(4)
             }
         }
         Slide {
@@ -190,7 +189,6 @@ SlideSet {
                 title: "got_overwriting.cpp"
                 fileName: "../src/got_overwriting/got_overwriting.cpp"
                 fileMarker: "slide hook"
-                visible: rebinding.onlyStep(7)
             }
         }
         Slide {
@@ -203,7 +201,6 @@ SlideSet {
                         $ ./got_overwriting/got_overwriting
                         relocation: malloc: 5604cc5c0038 | 0x7fec64a0e5d0
                         malloc intercepted: 100 -> 0x5604cd0a8ee0"
-                visible: rebinding.onlyStep(8)
             }
         }
     }
