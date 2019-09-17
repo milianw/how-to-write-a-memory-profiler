@@ -2,21 +2,6 @@ import SlideViewer 1.0
 
 SlideSet {
     title: "Preloading"
-    Slide {
-        slideId: 10
-        title: "Memory Allocations"
-        text: "What is allocating dynamic storage (i.e. heap memory)?
-               * In <tt>libc</tt>:
-               ** <tt>malloc</tt>, <tt>free</tt>
-               ** <tt>realloc</tt>, <tt>calloc</tt>
-               ** <tt>posix_memalign</tt>, <tt>aligned_alloc</tt>, <tt>valloc</tt>
-               * In <tt>libstdc++</tt> / <tt>libc++</tt>:
-               ** <tt>operator new</tt>, <tt>operator new[]</tt>
-               ** <tt>operator delete</tt>, <tt>operator delete[]</tt>
-               ** <tt>std::align_val_t</tt> overloads
-               * In custom allocator implementations:
-               ** <tt>sbrk</tt>, <tt>mmap</tt> with <tt>MAP_ANONYMOUS</tt>"
-    }
 //     SlideSet {
 //         title: "Code Injection"
         Slide {
