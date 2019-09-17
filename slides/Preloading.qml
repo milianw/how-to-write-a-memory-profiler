@@ -27,7 +27,7 @@ SlideSet {
             title: "Intercepting Library Calls"
             text: "Build a library with the symbols you want to intercept
                 * Use <tt>dlsym</tt> from <tt>libdl.so</tt> to find the original function
-                * Casting of <tt>void *</tt> to a function pointer is valid on POSIX"
+                * Casting of <tt>void*</tt> to a function pointer is valid on POSIX"
             CppCode {
                 title: "preload.cpp:"
                 fileName: "../src/preload/preload.cpp"

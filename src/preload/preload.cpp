@@ -8,13 +8,13 @@
 
 extern "C"
 {
-void* malloc(size_t size) noexcept
+void* malloc(size_t size)
 {
-    static auto original_malloc = dlsym(RTLD_NEXT, "malloc");
+    static void* original_malloc = dlsym(RTLD_NEXT, "malloc");
     assert(original_malloc);
-    auto original_malloc_fn = reinterpret_cast<decltype(&::malloc)>(original_malloc);
+    auto *original_malloc_fn = reinterpret_cast<decltype(&::malloc)>(original_malloc);
 
-    auto *ret = original_malloc_fn(size);
+    void *ret = original_malloc_fn(size);
     fprintf(stderr, "malloc intercepted: %zu -> %p\n", size, ret);
     return ret;
 }
