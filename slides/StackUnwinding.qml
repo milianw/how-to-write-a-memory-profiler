@@ -7,8 +7,8 @@ SlideSet {
         title: "Stack Unwinding"
         text: "* We need to unwind the stack to get a backtrace
                * Approaches:
-               ** Frame pointer unwinding (requires <tt>-fno-omit-frame-pointer</tt>)
-               ** Use exception unwind tables (<tt>.eh_frame</tt> or <tt>.ARM.exidx</tt> sections)
+               ** Frame pointer (requires <tt>-fno-omit-frame-pointer</tt>)
+               ** Exception unwind tables (<tt>.eh_frame</tt> or <tt>.ARM.exidx</tt> sections)
                ** DWARF debug information (<tt>.debug_frame</tt> section)
                ** Alternatives:
                *** Intel LBR (often too shallow)

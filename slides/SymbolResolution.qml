@@ -2,80 +2,107 @@ import SlideViewer 1.0
 
 SlideSet {
     title: "Symbol Resolution"
-    Slide {
-        slideId: 40
-        id: symbolResolution
-        title: "Symbol Resolution"
-        text: "* Instruction pointer: <tt>0x55b20bc95d9f</tt>
-               * Corresponding ELF map:"
-        Code {
-            dialect: "Bash"
-            code: "$ ./backtrace/preload_backtrace.sh ./test_clients/delay &
-                   $ cat /proc/$(pidof delay)/maps"
+    SlideSet {
+        title: "Introduction"
+        Slide {
+            slideId: 40
+            id: goal
+            title: "Symbol Resolution"
+            text: "* Goal:
+                ** From instruction pointer: <tt>0x55b20bc95d9f</tt>
+                ** To human readable symbol"
+            CppCode {
+                code: "
+                        std::basic_ostream<char, std::char_traits<char> >&
+                            std::operator<<
+                                <std::char_traits<char> >
+                                    (std::basic_ostream<char, std::char_traits<char> >&, char const*)"
+                visible: goal.minStep(1)
+            }
         }
-        Code {
-            code: "
-                    55b20bc95000-55b20bc97000 r-xp 00000000 08:04 18622503 \\
-                        .../test_clients/delay
-                    55b20bc97000-55b20bc98000 r--p 00001000 08:04 18622503 \\
-                        .../test_clients/delay
-                    55b20bc98000-55b20bc99000 rw-p 00002000 08:04 18622503 \\
-                        .../test_clients/delay
-                    ..."
+        Slide {
+            slideId: 53
+            title: "IP Mapping"
+            text:"* Map instruction pointer address to ELF offset:"
+            Code {
+                dialect: "Bash"
+                code: "$ ./backtrace/preload_backtrace.sh ./test_clients/delay &
+
+                    $ cat /proc/$(pidof delay)/maps"
+            }
+            Text {
+                text: "* Find first address for file that has mapping which includes <tt>0x55b20bc95d9f</tt>:"
+            }
+            Code {
+                code: "
+                        ...
+                        55b20bc95000-55b20bc97000 r-xp 00000000 08:04 18622503 \\
+                            .../test_clients/delay
+                        55b20bc97000-55b20bc98000 r--p 00001000 08:04 18622503 \\
+                            .../test_clients/delay
+                        55b20bc98000-55b20bc99000 rw-p 00002000 08:04 18622503 \\
+                            .../test_clients/delay
+                        ..."
+            }
+            Text {
+                text: "* Mapped address: <tt>0x55b20bc95d9f - 0x55b20bc95000 = 0xd9f</tt>"
+            }
         }
-        Text {
-            text: "* Mapped address: <tt>0x55b20bc95d9f - 0x55b20bc95000 = 0xd9f</tt>
-                   * Symbol resolution:"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(0)
-            code: "$ addr2line -p -e .../test_clients/delay -a 0xD9F"
-            dialect: "Bash"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(0)
-            showLineNumbers: true
-            code: "
-                0x0000000000000d9f:
-                    /usr/include/c++/9.1.0/ostream:570"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(1)
-            code: "$ addr2line -p -f -e .../test_clients/delay -a 0xD9F"
-            dialect: "Bash"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(1)
-            code: "
-                0x0000000000000d9f:
-                    _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-                        at /usr/include/c++/9.1.0/ostream:570"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(2)
-            code: "$ addr2line -p -f -C -e .../test_clients/delay -a 0xD9F"
-            dialect: "Bash"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(2)
-            code: "
-                0x0000000000000d9f:
-                    std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
-                        at /usr/include/c++/9.1.0/ostream:570"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(3)
-            code: "$ addr2line -p -f -C -i -e .../test_clients/delay -a 0xD9F"
-            dialect: "Bash"
-        }
-        Code {
-            visible: symbolResolution.onlyStep(3)
-            code: "
-                0x0000000000000d9f:
-                    std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
-                        at /usr/include/c++/9.1.0/ostream:570
-                    (inlined by) main
-                        at .../test_clients/delay.cpp:9"
+        Slide {
+            slideId: 54
+            id: symbolResolution
+            title: "Symbol Resolution"
+            text: "* Now finally resolve the symbol:"
+            Code {
+                visible: symbolResolution.minStep(0)
+                code: "$ addr2line -p -e .../test_clients/delay -a 0xd9F"
+                dialect: "Bash"
+            }
+            Code {
+                visible: symbolResolution.minStep(0)
+                showLineNumbers: true
+                code: "
+                    0x0000000000000d9f:
+                        /usr/include/c++/9.1.0/ostream:570"
+            }
+            Code {
+                visible: symbolResolution.minStep(1)
+                code: "$ addr2line -p -f -e .../test_clients/delay -a 0xd9f # with function names"
+                dialect: "Bash"
+            }
+            Code {
+                visible: symbolResolution.minStep(1)
+                code: "
+                    0x0000000000000d9f:
+                        _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+                            at /usr/include/c++/9.1.0/ostream:570"
+            }
+            Code {
+                visible: symbolResolution.minStep(2)
+                code: "$ addr2line -p -f -C -e .../test_clients/delay -a 0xd9f # with demangling"
+                dialect: "Bash"
+            }
+            Code {
+                visible: symbolResolution.minStep(2)
+                code: "
+                    0x0000000000000d9f:
+                        std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
+                            at /usr/include/c++/9.1.0/ostream:570"
+            }
+            Code {
+                visible: symbolResolution.minStep(3)
+                code: "$ addr2line -p -f -C -i -e .../test_clients/delay -a 0xd9f # with inlines"
+                dialect: "Bash"
+            }
+            Code {
+                visible: symbolResolution.minStep(3)
+                code: "
+                    0x0000000000000d9f:
+                        std::basic_ostream&lt;...>& std::operator&lt;&lt; &lt;...>(...)
+                            at /usr/include/c++/9.1.0/ostream:570
+                        (inlined by) main
+                            at .../test_clients/delay.cpp:9"
+            }
         }
     }
     SlideSet {
@@ -228,11 +255,11 @@ SlideSet {
                 dialect: "Bash"
                 code: "$ c++filt _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc"
             }
-            Code {
+            CppCode {
                 code: "
-                std::basic_ostream&lt;char, std::char_traits&lt;char>>&
-                    std::operator&lt;&lt; &lt;std::char_traits&lt;char>>
-                    (std::basic_ostream&lt;char, std::char_traits&lt;char>>&, char const*)
+                std::basic_ostream<char, std::char_traits<char>>&
+                    std::operator<< <std::char_traits<char>>
+                    (std::basic_ostream<char, std::char_traits<char>>&, char const*)
                 "
             }
         }
@@ -269,7 +296,7 @@ SlideSet {
                     /usr/lib/libstdc++.so.6@a2ac9
                     /build/gcc/src/gcc/libstdc++-v3/libsupc++/new_op.cc:50:22
                 ip: 0x55f38ef73ca1
-                    void std::vector&lt;int, std::allocator&lt;int> >::_M_realloc_insert...
+                    void std::vector<int, std::allocator<int> >::_M_realloc_insert...
                     .../test_clients/vector@ca1
                     /usr/include/c++/9.1.0/ext/new_allocator.h:114:41
                 ip:0x55f38ef73ad0
