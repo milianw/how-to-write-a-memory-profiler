@@ -42,16 +42,11 @@ SlideDeck {
         }
     }
 
-    SlideSet {
-        label: "part-talk"
-        title: "How to Write a Heap Profiler"
-        Introduction {}
-        Preloading {}
-        StackUnwinding {}
-        SymbolResolution {}
-        RuntimeAttaching {}
-//         OutputDataFormat {}
-    }
+    Introduction {}
+    Preloading {}
+    StackUnwinding {}
+    SymbolResolution {}
+    RuntimeAttaching {}
 
     Slide {
         slideId: 101
