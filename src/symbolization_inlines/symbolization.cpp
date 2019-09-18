@@ -42,7 +42,8 @@ int main()
             if (sscanf(line.c_str(), "\tip: %zx", &ip) == 1) {
                 const auto symbol = symbolizer.symbol(ip);
                 for (const auto &inlineSymbol : symbolizer.inlineSymbols(ip)) {
-                    std::cout << "\n\t\t" << symbolizer.demangle(inlineSymbol.name) << ' ' << symbol.file << ':' << symbol.line << ':' << symbol.column << " (inline)";
+                    std::cout << "\n\t\t" << symbolizer.demangle(inlineSymbol.name) << ' ' << inlineSymbol.file
+                              << ':' << inlineSymbol.line << ':' << inlineSymbol.column << " (inline)";
                 }
                 std::cout << "\n\t\t" << symbolizer.demangle(symbol.name) << '@' << std::hex << symbol.offset << std::dec;
                 if (!symbol.file.empty())
