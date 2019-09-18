@@ -29,7 +29,8 @@ void overwriteGotEntry(const char *symname, Elf::Addr gotAddr)
 //<-- slide hook
 
 //--> slide relocations
-void overwriteGotEntries(const Elf::JmprelTable &relocations,
+template<typename RelocationTable>
+void overwriteGotEntries(const RelocationTable &relocations,
                          const Elf::SymbolTable &symbols,
                          const Elf::StringTable &strings,
                          Elf::Addr baseAddr)
