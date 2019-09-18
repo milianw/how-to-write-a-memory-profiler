@@ -13,11 +13,34 @@ SlideSet {
                 ** To human readable symbol"
             CppCode {
                 code: "
-                        std::basic_ostream<char, std::char_traits<char> >&
-                            std::operator<<
-                                <std::char_traits<char> >
-                                    (std::basic_ostream<char, std::char_traits<char> >&, char const*)"
-                visible: goal.minStep(1)
+                std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>,
+                    std::vector<std::map<int, std::__cxx11::basic_string<char, std::char_traits<char>,
+                    std::allocator<char>>, std::less<int>, std::allocator<std::pair<int const,
+                    std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>>>>,
+                    std::allocator<std::map<int, std::__cxx11::basic_string<char, std::char_traits<char>,
+                    std::allocator<char>>, std::less<int>, std::allocator<std::pair<int const,
+                    std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>>>>>>,
+                    std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>>,
+                    std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>,
+                    std::allocator<char>> const, std::vector<std::map<int, std::__cxx11::basic_string<char,
+                    std::char_traits<char>, std::allocator<char>>, std::less<int>, std::allocator<std::pair<int const,
+                    std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>>>>,
+                    std::allocator<std::map<int, std::__cxx11::basic_string<char, std::char_traits<char>,
+                    std::allocator<char>>, std::less<int>, std::allocator<std::pair<int const,
+                    std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>>>>>>>>>
+                    "
+                showLineNumbers: false
+                visible: goal.onlyStep(1)
+            }
+            CppCode {
+                code: "std::map<std::string, std::vector<std::map<int, std::string>>>"
+                visible: goal.minStep(2)
+            }
+            Text {
+                visible: goal.onlyStep(3)
+                text: "
+                       * The last step requires heuristics
+                       ** Typedefs will change based on used STL implementation"
             }
         }
         Slide {
