@@ -202,5 +202,44 @@ SlideSet {
                         malloc intercepted: 100 -> 0x5604cd0a8ee0"
             }
         }
+        Slide {
+            slideId: 204
+            title: "Dynamic Rebinding: Runtime Attaching"
+            text: "Putting it all together:"
+            Code {
+                title: "attach_intercept"
+                dialect: "Bash"
+                showLineNumbers: true
+                code: "
+                        $ ./attach_intercept/attach_intercept.sh $(pidof ...) \\
+                            |& ./symbolization_inlines/symbolization_inlines"
+            }
+            Code {
+                code :"
+                        ...
+                        malloc(8) = 0x563360be0f40
+                        ip: 0x7f906790f67c (.../attach_intercept/libattach_intercept.so@267c)
+                            intercept::malloc(unsigned long)@2c
+                        ip: 0x7f906777dac9 (/usr/lib/libstdc++.so.6@a2ac9)
+                            operator new(unsigned long)@19
+                        ip: 0x56335f93b041
+                            __gnu_cxx::new_allocator&lt;double>::allocate(unsigned long, void const*)
+                            std::allocator_traits&lt;std::allocator&lt;double> >::allocate(std::allocator&lt;double>&, ...
+                            std::_Vector_base&lt;double, std::allocator&lt;double> >::_M_allocate(unsigned long)
+                            void std::vector&lt;double, std::allocator&lt;double> >::_M_realloc_insert&lt;double>(...
+                        ip: 0x56335f93ae3a (.../test_clients/delay@e3a)
+                            double& std::vector&lt;double, std::allocator&lt;double> >::emplace_back&lt;double>(double&&)
+                            std::vector&lt;double, std::allocator&lt;double> >::push_back(double&&)
+                            std::back_insert_iterator&lt;std::vector&lt;double, std::allocator&lt;double> > >::operator=(...
+                            generate_n&lt;std::back_insert_iterator&lt;std::vector&lt;double> >, long unsigned int, ...
+                            main@ca
+                        ip: 0x7f90673deee2 (/usr/lib/libc.so.6@26ee2)
+                            __libc_start_main@f2
+                        ip: 0x56335f93aefd (.../test_clients/delay@efd)
+                            _start@2d
+                        ...
+                    "
+            }
+        }
     }
 }

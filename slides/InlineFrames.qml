@@ -81,7 +81,7 @@ SlideSet {
                     inline: std::vector&lt;int, std::allocator&lt;int> >::push_back(int&&)
                     inline: std::back_insert_iterator&lt;std::vector&lt;int, std::allocator&lt;int> > >::operator=...
                     inline: generate_n&lt;std::back_insert_iterator&lt;std::vector&lt;int> >, int, ...
-                    main@70 /usr/include/c++/9.1.0/bits/vector.tcc:121:4
+                    main@70
                 ip: 0x7fb788799ee2 (/usr/lib/libc.so.6@26ee2)
                     __libc_start_main@f2
                 ip: 0x55de15b09b5d (.../test_clients/vector@b5d)
