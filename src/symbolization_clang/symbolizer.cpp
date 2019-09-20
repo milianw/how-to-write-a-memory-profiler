@@ -8,6 +8,7 @@
 
 #include <tuple>
 #include <algorithm>
+#include <filesystem>
 
 namespace {
 const Dwfl_Callbacks s_callbacks = {
@@ -16,6 +17,11 @@ const Dwfl_Callbacks s_callbacks = {
     &dwfl_offline_section_address,
     nullptr
 };
+
+auto cleanPath(const std::string_view &path)
+{
+    return std::filesystem::path(path).lexically_normal().string();
+}
 
 const char *dieName(Dwarf_Die *die)
 {
@@ -43,7 +49,7 @@ Symbol inlinedSubroutineSymbol(Dwarf_Die *scope, Dwarf_Files *files, Symbol &non
     const char *file = nullptr;
     if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_file, &attr), &val) == 0)
         file = dwarf_filesrc(files, val, nullptr, nullptr);
-    symbol.file = file ? file : "??";
+    symbol.file = file ? cleanPath(file) : "??";
 
     if (dwarf_formudata(dwarf_attr(scope, DW_AT_call_line, &attr), &val) == 0)
         symbol.line = static_cast<int>(val);
@@ -325,7 +331,7 @@ IpInfo Symbolizer::ipInfo(uint64_t ip)
         if (srcloc) {
             auto srcfile = dwarf_linesrc(srcloc, nullptr, nullptr);
             if (srcfile) {
-                nonInlined.file = srcfile;
+                nonInlined.file = cleanPath(srcfile);
                 dwarf_lineno(srcloc, &nonInlined.line);
                 dwarf_linecol(srcloc, &nonInlined.column);
             }
