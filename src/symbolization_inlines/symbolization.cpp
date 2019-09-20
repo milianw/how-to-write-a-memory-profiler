@@ -40,15 +40,17 @@ int main()
         } else if (startsWith(line, "\tip: ")) {
             uint64_t ip = 0;
             if (sscanf(line.c_str(), "\tip: %zx", &ip) == 1) {
-                const auto symbol = symbolizer.symbol(ip);
-                for (const auto &inlineSymbol : symbolizer.inlineSymbols(ip)) {
-                    std::cout << "\n\t\t" << symbolizer.demangle(inlineSymbol.name) << ' ' << inlineSymbol.file
-                              << ':' << inlineSymbol.line << ':' << inlineSymbol.column << " (inline)";
+                const auto info = symbolizer.ipInfo(ip);
+                std::cout << " (" << info.dso << '@' << std::hex << info.dso_offset << std::dec << ')';
+                for (const auto &symbol : info.symbols) {
+                    std::cout << "\n\t\t" << symbolizer.demangle(symbol.name);
+                    if (!symbol.isInlined)
+                        std::cout << '@' << std::hex << info.symbol_offset << std::dec;
+                    if (!symbol.file.empty())
+                        std::cout << ' ' << symbol.file << ':' << symbol.line << ':' << symbol.column;
+                    if (symbol.isInlined)
+                        std::cout << " (inline)";
                 }
-                std::cout << "\n\t\t" << symbolizer.demangle(symbol.name) << '@' << std::hex << symbol.offset << std::dec;
-                if (!symbol.file.empty())
-                    std::cout << ' ' << symbol.file << ':' << symbol.line << ':' << symbol.column;
-                std::cout << " (" << symbol.dso << '@' << std::hex << symbol.dso_offset << std::dec << ')';
             }
         }
         std::cout << '\n';

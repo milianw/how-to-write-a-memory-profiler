@@ -14,13 +14,15 @@ struct Symbol
     std::string file;
     int line = -1;
     int column = -1;
+    bool isInlined = false;
 };
 
-struct DsoSymbol : Symbol
+struct IpInfo
 {
+    std::vector<Symbol> symbols;
     std::string dso;
     uint64_t dso_offset = 0;
-    uint64_t offset = 0;
+    uint64_t symbol_offset = 0;
 };
 
 class Symbolizer
@@ -33,8 +35,7 @@ public:
     void reportElf(const std::string &path, uint64_t addr);
     void endReportElf();
 
-    DsoSymbol symbol(uint64_t ip);
-    std::vector<Symbol> inlineSymbols(uint64_t ip);
+    IpInfo ipInfo(uint64_t ip);
 
     std::string demangle(const std::string &symbol) const;
 
