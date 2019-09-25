@@ -102,13 +102,15 @@ class CuDieRanges
             : cuDie(die)
             , bias(bias)
         {
-            if (dwarf_lowpc(die, &low) != 0) {
-                fprintf(stderr, "failed to get low pc for CU DIE\n");
-                return;
-            }
-            if (dwarf_highpc(die, &high) != 0) {
-                fprintf(stderr, "failed to get high pc for CU DIE\n");
-                return;
+            if (dwarf_lowpc(die, &low) != 0 || dwarf_highpc(die, &high) != 0) {
+                Dwarf_Addr rangeLow = 0;
+                Dwarf_Addr rangeHigh = 0;
+                Dwarf_Addr base = 0;
+                ptrdiff_t offset = 0;
+                while ((offset = dwarf_ranges(die, offset, &base, &rangeLow, &rangeHigh)) > 0) {
+                    low = std::min(rangeLow, low);
+                    high = std::max(rangeHigh, high);
+                }
             }
             low += bias;
             high += bias;
@@ -137,6 +139,8 @@ public:
             const auto range = CuDieRange(die, bias);
             if (range.low < range.high)
                 ranges.push_back(range);
+            else
+                fprintf(stderr, "failed to find range for CU DIE at bias %zx\n", bias);
         }
     }
 
