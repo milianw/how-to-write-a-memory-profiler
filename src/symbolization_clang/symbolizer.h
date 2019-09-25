@@ -39,10 +39,10 @@ public:
 
     std::string demangle(const std::string &symbol) const;
 
-    class ModuleDieRangeMaps;
+    class ModuleCuDieRanges;
 
 private:
     Dwfl *m_dwfl;
 
-    std::unique_ptr<ModuleDieRangeMaps> m_rangeMaps;
+    std::unique_ptr<ModuleCuDieRanges> m_rangeMaps;
 };

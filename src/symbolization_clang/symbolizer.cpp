@@ -94,110 +94,39 @@ std::vector<Symbol> inlinedSymbols(Symbol nonInlined, Dwarf_Die *cuDie, uint64_t
     return symbols;
 }
 
-struct AddrRange
+class CuDieRanges
 {
-    Dwarf_Addr low = 0;
-    Dwarf_Addr high = 0;
-
-    void setMinMax(const AddrRange range)
+    struct CuDieRange
     {
-        if (range.low && (low == 0 || low > range.low))
-            low = range.low;
-        if (range.high && (high == 0 || high < range.high))
-            high = range.high;
-    }
-
-    bool contains(Dwarf_Addr addr) const
-    {
-        return low <= addr && addr < high;
-    }
-
-    bool operator<(const AddrRange &rhs) const
-    {
-        return std::tie(low, high) < std::tie(rhs.low, high);
-    }
-};
-
-struct DieRangeMap
-{
-    DieRangeMap(Dwarf_Die *die = nullptr, Dwarf_Addr bias = 0)
-        : die(die)
-        , bias(bias)
-    {
-        if (die)
-            gatherRanges(die, bias);
-    }
-
-    bool contains(Dwarf_Addr addr) const
-    {
-        if (!range.contains(addr))
-            return false;
-        return std::any_of(ranges.begin(), ranges.end(),
-                           [addr](AddrRange range) {
-                                return range.contains(addr);
-                           });
-    }
-
-    bool operator<(const DieRangeMap &rhs) const
-    {
-        return range < rhs.range;
-    }
-
-    Dwarf_Die *die = nullptr;
-    AddrRange range; // may be non-continuous, but allows quick checks and sorting
-    std::vector<AddrRange> ranges;
-    Dwarf_Addr bias;
-
-private:
-    void gatherRanges(Dwarf_Die *parent_die, Dwarf_Addr bias)
-    {
-        Dwarf_Die die;
-        if (dwarf_child(parent_die, &die) != 0)
-            return;
-
-        do {
-            switch (dwarf_tag(&die)) {
-            case DW_TAG_subprogram:
-            case DW_TAG_inlined_subroutine:
-                addRanges(&die, bias);
-                break;
-            };
-            bool declaration = false;
-            Dwarf_Attribute attr_mem;
-            dwarf_formflag(dwarf_attr(&die, DW_AT_declaration, &attr_mem), &declaration);
-            if (!declaration) {
-                // let's be curious and look deeper in the tree,
-                // function are not necessarily at the first level, but
-                // might be nested inside a namespace, structure etc.
-                gatherRanges(&die, bias);
+        CuDieRange(Dwarf_Die *die, Dwarf_Addr bias)
+            : cuDie(die)
+            , bias(bias)
+        {
+            if (dwarf_lowpc(die, &low) != 0) {
+                fprintf(stderr, "failed to get low pc for CU DIE\n");
+                return;
             }
-        } while (dwarf_siblingof(&die, &die) == 0);
-    }
-
-    void addRanges(Dwarf_Die *die, Dwarf_Addr bias)
-    {
-        Dwarf_Addr low = 0, high = 0;
-        Dwarf_Addr base = 0;
-        ptrdiff_t offset = 0;
-        while ((offset = dwarf_ranges(die, offset, &base, &low, &high)) > 0) {
-            addRange(low, high, bias);
+            if (dwarf_highpc(die, &high) != 0) {
+                fprintf(stderr, "failed to get high pc for CU DIE\n");
+                return;
+            }
+            low += bias;
+            high += bias;
         }
-    }
 
-    void addRange(Dwarf_Addr low, Dwarf_Addr high, Dwarf_Addr bias)
-    {
-        AddrRange ret;
-        ret.low = low + bias;
-        ret.high = high + bias;
-        range.setMinMax(ret);
-        ranges.push_back(ret);
-    }
-};
+        Dwarf_Die *cuDie = nullptr;
+        Dwarf_Addr bias = 0;
 
-class DieRangeMaps
-{
+        Dwarf_Addr low = std::numeric_limits<Dwarf_Addr>::max();
+        Dwarf_Addr high = std::numeric_limits<Dwarf_Addr>::min();
+
+        bool contains(Dwarf_Addr addr) const
+        {
+            return low <= addr && addr < high;
+        }
+    };
 public:
-    DieRangeMaps(Dwfl_Module *mod = nullptr)
+    CuDieRanges(Dwfl_Module *mod = nullptr)
     {
         if (!mod)
             return;
@@ -205,53 +134,45 @@ public:
         Dwarf_Die *die = nullptr;
         Dwarf_Addr bias = 0;
         while ((die = dwfl_module_nextcu(mod, die, &bias))) {
-            DieRangeMap map(die, bias);
-            if (map.range.low == 0 && map.range.high == 0) {
-                // no range entries, skip
-                continue;
-            }
-            range.setMinMax(map.range);
-            maps.push_back(std::move(map));
+            const auto range = CuDieRange(die, bias);
+            if (range.low < range.high)
+                ranges.push_back(range);
         }
     }
 
     Dwarf_Die *findDie(Dwarf_Addr addr, Dwarf_Addr *bias) const
     {
-        if (!range.contains(addr))
-            return nullptr;
-
-        auto it = std::find_if(maps.begin(), maps.end(),
-                               [addr](const DieRangeMap &map) {
-                                    return map.contains(addr);
+        auto it = std::find_if(ranges.begin(), ranges.end(),
+                               [addr](const CuDieRange &range) {
+                                    return range.contains(addr);
                                });
-        if (it == maps.end())
+        if (it == ranges.end())
             return nullptr;
 
         *bias = it->bias;
-        return it->die;
+        return it->cuDie;
     }
 public:
-    AddrRange range; // may be non-continuous, but allows quick checks
-    std::vector<DieRangeMap> maps;
+    std::vector<CuDieRange> ranges;
 };
 }
 
-class Symbolizer::ModuleDieRangeMaps
+class Symbolizer::ModuleCuDieRanges
 {
 public:
     auto moduleAddrDie(Dwfl_Module *mod, Dwarf_Addr addr, Dwarf_Addr *bias)
     {
         auto it = dieRangeMaps.find(mod);
         if (it == dieRangeMaps.end())
-            it = dieRangeMaps.insert({mod, DieRangeMaps(mod)}).first;
+            it = dieRangeMaps.insert({mod, CuDieRanges(mod)}).first;
         return it->second.findDie(addr, bias);
     }
 private:
-    std::unordered_map<Dwfl_Module *, DieRangeMaps> dieRangeMaps;
+    std::unordered_map<Dwfl_Module *, CuDieRanges> dieRangeMaps;
 };
 
 namespace {
-auto moduleAddrDie(Dwfl_Module *mod, Dwarf_Addr addr, Dwarf_Addr *bias, std::unique_ptr<Symbolizer::ModuleDieRangeMaps> *moduleRangeMaps)
+auto moduleAddrDie(Dwfl_Module *mod, Dwarf_Addr addr, Dwarf_Addr *bias, std::unique_ptr<Symbolizer::ModuleCuDieRanges> *moduleRangeMaps)
 {
     auto die = dwfl_module_addrdie(mod, addr, bias);
     if (die)
@@ -261,7 +182,7 @@ auto moduleAddrDie(Dwfl_Module *mod, Dwarf_Addr addr, Dwarf_Addr *bias, std::uni
     // cf.: https://sourceware.org/ml/elfutils-devel/2017-q2/msg00180.html
     // build a custom lookup table and query that one
     if (!*moduleRangeMaps)
-        *moduleRangeMaps = std::make_unique<Symbolizer::ModuleDieRangeMaps>();
+        *moduleRangeMaps = std::make_unique<Symbolizer::ModuleCuDieRanges>();
 
     return (*moduleRangeMaps)->moduleAddrDie(mod, addr, bias);
 }
