@@ -96,38 +96,20 @@ std::vector<Symbol> inlinedSymbols(Symbol nonInlined, Dwarf_Die *cuDie, uint64_t
 
 class CuDieRanges
 {
+public:
     struct CuDieRange
     {
-        CuDieRange(Dwarf_Die *die, Dwarf_Addr bias)
-            : cuDie(die)
-            , bias(bias)
-        {
-            if (dwarf_lowpc(die, &low) != 0 || dwarf_highpc(die, &high) != 0) {
-                Dwarf_Addr rangeLow = 0;
-                Dwarf_Addr rangeHigh = 0;
-                Dwarf_Addr base = 0;
-                ptrdiff_t offset = 0;
-                while ((offset = dwarf_ranges(die, offset, &base, &rangeLow, &rangeHigh)) > 0) {
-                    low = std::min(rangeLow, low);
-                    high = std::max(rangeHigh, high);
-                }
-            }
-            low += bias;
-            high += bias;
-        }
-
-        Dwarf_Die *cuDie = nullptr;
-        Dwarf_Addr bias = 0;
-
-        Dwarf_Addr low = std::numeric_limits<Dwarf_Addr>::max();
-        Dwarf_Addr high = std::numeric_limits<Dwarf_Addr>::min();
+        Dwarf_Die *cuDie;
+        Dwarf_Addr bias;
+        Dwarf_Addr low;
+        Dwarf_Addr high;
 
         bool contains(Dwarf_Addr addr) const
         {
             return low <= addr && addr < high;
         }
     };
-public:
+
     CuDieRanges(Dwfl_Module *mod = nullptr)
     {
         if (!mod)
@@ -136,11 +118,13 @@ public:
         Dwarf_Die *die = nullptr;
         Dwarf_Addr bias = 0;
         while ((die = dwfl_module_nextcu(mod, die, &bias))) {
-            const auto range = CuDieRange(die, bias);
-            if (range.low < range.high)
-                ranges.push_back(range);
-            else
-                fprintf(stderr, "failed to find range for CU DIE at bias %zx\n", bias);
+            Dwarf_Addr low = 0;
+            Dwarf_Addr high = 0;
+            Dwarf_Addr base = 0;
+            ptrdiff_t offset = 0;
+            while ((offset = dwarf_ranges(die, offset, &base, &low, &high)) > 0) {
+                ranges.push_back(CuDieRange{die, bias, low + bias, high + bias});
+            }
         }
     }
 
